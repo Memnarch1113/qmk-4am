@@ -83,6 +83,5 @@ inline void ergodox_led_all_set(uint8_t n)              {}
 	}
 
 #define LAYOUT_ergodox KEYMAP
-// #define LAYOUT_ergodox_pretty KEYMAP_PRETTY
 
 #endif

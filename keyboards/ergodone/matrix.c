@@ -244,9 +244,9 @@ static matrix_row_t read_cols(uint8_t row)
 
 /* Row pin configuration
  *
- * Pro Micro: 0   1   2   3   4   5
- *            F4  F5  F6  F7  B1  B2
- *            A3  A2  A1  A0  15  16
+ * Pro Micro: 0   1   2   3   4  // 5
+ *            F4  F5  F6  F7  B1 // B2
+ *            A3  A2  A1  A0  15 // 16
  *
  * Expander:  0   1   2   3   4   5
  */
@@ -255,8 +255,8 @@ static void unselect_rows(void)
   // Pro Micro
   DDRF  &= ~(1<<PF4 | 1<<PF5 | 1<<PF6 | 1<<PF7);
   PORTF &= ~(1<<PF4 | 1<<PF5 | 1<<PF6 | 1<<PF7);
-  DDRB  &= ~(1<<PB1 | 1<<PB2);
-  PORTB &= ~(1<<PB1 | 1<<PB2);
+  DDRB  &= ~(1<<PB1);
+  PORTB &= ~(1<<PB1);
 
   // Expander
   expander_unselect_rows();
@@ -286,10 +286,10 @@ static void select_row(uint8_t row)
     DDRB  |=  (1<<PB1);
     PORTB &= ~(1<<PB1);
     break;
-  case 5:
-    DDRB  |=  (1<<PB2);
-    PORTB &= ~(1<<PB2);
-    break;
+  // case 5:
+  //   DDRB  |=  (1<<PB2);
+  //   PORTB &= ~(1<<PB2);
+  //   break;
   }
 
   expander_select_row(row);

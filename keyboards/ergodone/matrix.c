@@ -212,18 +212,32 @@ uint8_t matrix_key_count(void)
  *            PD3  PD2  PD4  PC6  PD7  PE6  PB4
  *
  * Expander:  13   12   11   10   9    8    7
+ ********************************************
+ * Good ones                                *
+ *                                          *
+ * Pro Micro                                *
+ * col: 0   1   2   3   4   5   6   7   8   * //NOTE Flipped B2 and B3 so that they're in order
+ * pin: F4  F5  F6  F7  B1  B2  B3  B5  B6  *
+ *                                          *
+ * MCP23018                                 *
+ * col: 9   10  11  12  13  14  15  16  17  *
+ * pin: B5  B4  B3  B2  B1  B0  A5  A6  ??  *
+ ********************************************
  */
 static void  init_cols(void)
 {
   // Pro Micro
-  DDRE  &= ~(1<<PE6);
-  PORTE |=  (1<<PE6);
-  DDRD  &= ~(1<<PD2 | 1<<PD3 | 1<<PD4 | 1<<PD7);
-  PORTD |=  (1<<PD2 | 1<<PD3 | 1<<PD4 | 1<<PD7);
-  DDRC  &= ~(1<<PC6);
-  PORTC |=  (1<<PC6);
-  DDRB  &= ~(1<<PB4);
-  PORTB |=  (1<<PB4);
+  // DDRE  &= ~(1<<PE6);
+  // PORTE |=  (1<<PE6);
+  // DDRD  &= ~(1<<PD2 | 1<<PD3 | 1<<PD4 | 1<<PD7);
+  // PORTD |=  (1<<PD2 | 1<<PD3 | 1<<PD4 | 1<<PD7);
+  // DDRC  &= ~(1<<PC6);
+  // PORTC |=  (1<<PC6);
+  DDRF  &= ~(1<<PF4 | 1<<PF5 | 1<<PF6 | 1<<PF7);
+  PORTF |=  (1<<PF4 | 1<<PF5 | 1<<PF6 | 1<<PF7);
+
+  DDRB  &= ~(1<<PB1 | 1<<PB2 | 1<<PB3 | 1<<PB5 | 1<<PB6);
+  PORTB |=  (1<<PB1 | 1<<PB2 | 1<<PB3 | 1<<PB5 | 1<<PB6);
 
   // MCP23017
   expander_init();
@@ -231,14 +245,16 @@ static void  init_cols(void)
 
 static matrix_row_t read_cols(uint8_t row)
 {
-  return expander_read_row() |
-    (PIND&(1<<PD3) ? 0 : (1<<6)) |
-    (PIND&(1<<PD2) ? 0 : (1<<5)) |
-    (PIND&(1<<PD4) ? 0 : (1<<4)) |
-    (PINC&(1<<PC6) ? 0 : (1<<3)) |
-    (PIND&(1<<PD7) ? 0 : (1<<2)) |
-    (PINE&(1<<PE6) ? 0 : (1<<1)) |
-    (PINB&(1<<PB4) ? 0 : (1<<0)) ;
+  return expander_read_row() | //DEAL WITH THIS BRAHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+    // (PINB&(1<<PB6) ? 0 : (1<<8)) |
+    (PINB&(1<<PB5) ? 0 : (1<<7)) |
+    (PINB&(1<<PB3) ? 0 : (1<<6)) |
+    (PINB&(1<<PB2) ? 0 : (1<<5)) |
+    (PINB&(1<<PB1) ? 0 : (1<<4)) |
+    (PINF&(1<<PF7) ? 0 : (1<<3)) |
+    (PINF&(1<<PF6) ? 0 : (1<<2)) |
+    (PINF&(1<<PF5) ? 0 : (1<<1)) |
+    (PINF&(1<<PF4) ? 0 : (1<<0)) ;
 }
 
 /* Row pin configuration
@@ -247,14 +263,35 @@ static matrix_row_t read_cols(uint8_t row)
  *            F4  F5  F6  F7  B1  B2
  *
  * Expander:  0   1   2   3   4   5
+ *
+ *  **************************
+ * Good ones:               *
+ *                          *
+ * Pro Micro:               *
+ * row: 0   1   2   3   4   *
+ * pin: B4  E6  D7  D4  C6  * //D4 and C6 are swapped from the old lets split layout for simplicity
+ *                          *
+ *                          *
+ * MCP23017                 *
+ * row: 5   6   7   8   9   *
+ * pin: A0  A1  A2  A3  A4  *
+ * **************************
+ *
  */
 static void unselect_rows(void)
 {
   // Pro Micro
-  DDRF  &= ~(1<<PF4 | 1<<PF5 | 1<<PF6 | 1<<PF7);
-  PORTF &= ~(1<<PF4 | 1<<PF5 | 1<<PF6 | 1<<PF7);
-  DDRB  &= ~(1<<PB1 | 1<<PB2);
-  PORTB &= ~(1<<PB1 | 1<<PB2);
+  DDRE  &= ~(1<<PE6);
+  PORTE &= ~(1<<PE6);
+
+  DDRB  &= ~(1<<PB4);
+  PORTB &= ~(1<<PB1);
+
+  DDRD  &= ~(1<<PD7 | 1<<PD4);
+  PORTB &= ~(1<<PD7 | 1<<PD4);
+
+  DDRC  &= ~(1<<PC6);
+  PORTC &= ~(1<<PC6);
 
   // Expander
   expander_unselect_rows();
@@ -265,29 +302,29 @@ static void select_row(uint8_t row)
   // Pro Micro
   switch (row) {
   case 0:
-    DDRF  |=  (1<<PF4);
-    PORTF &= ~(1<<PF4);
+    DDRB  |=  (1<<PB4);
+    PORTB &= ~(1<<PB4);
     break;
   case 1:
-    DDRF  |=  (1<<PF5);
-    PORTF &= ~(1<<PF5);
+    DDRE  |=  (1<<PE6);
+    PORTE &= ~(1<<PE6);
     break;
   case 2:
-    DDRF  |=  (1<<PF6);
-    PORTF &= ~(1<<PF6);
+    DDRD  |=  (1<<PD7);
+    PORTD &= ~(1<<PD7);
     break;
   case 3:
-    DDRF  |=  (1<<PF7);
-    PORTF &= ~(1<<PF7);
+    DDRD  |=  (1<<PD4);
+    PORTD &= ~(1<<PD4);
     break;
   case 4:
-    DDRB  |=  (1<<PB1);
-    PORTB &= ~(1<<PB1);
+    DDRC  |=  (1<<PC6);
+    PORTC &= ~(1<<PC6);
     break;
-  case 5:
-    DDRB  |=  (1<<PB2);
-    PORTB &= ~(1<<PB2);
-    break;
+  // case 5:
+  //   DDRB  |=  (1<<PB2);
+  //   PORTB &= ~(1<<PB2);
+  //   break;
   }
 
   expander_select_row(row);

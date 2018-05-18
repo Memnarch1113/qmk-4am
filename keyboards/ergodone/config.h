@@ -13,8 +13,8 @@
 #define DESCRIPTION     QMK keyboard firmware for ErgoDone
 
 /* key matrix size */
-#define MATRIX_ROWS 10
-#define MATRIX_COLS 9
+#define MATRIX_ROWS 5
+#define MATRIX_COLS 18
 
 #define MOUSEKEY_INTERVAL       20
 #define MOUSEKEY_DELAY          0

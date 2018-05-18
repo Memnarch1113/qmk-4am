@@ -273,7 +273,7 @@ static matrix_row_t read_cols(uint8_t row)
  *                          *
  *                          *
  * MCP23017                 *
- * row: 5   6   7   8   9   *
+ * row: 0   1   2   3   4   *
  * pin: A0  A1  A2  A3  A4  *
  * **************************
  *

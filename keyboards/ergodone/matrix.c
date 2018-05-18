@@ -208,9 +208,9 @@ uint8_t matrix_key_count(void)
 
 /* Column pin configuration
  *
- * Pro Micro: 6    5    4    3    2    1    0
- *            PD3  PD2  PD4  PC6  PD7  PE6  PB4
- *            TX0  RX1  4    5    6    7    8
+ * Pro Micro: 7    6    5    4    3    2    1    0
+ *            PB2  PD3  PD2  PD4  PC6  PD7  PE6  PB4
+ *            16   TX0  RX1  4    5    6    7    8
  *
  * Expander:  13   12   11   10   9    8    7
  */
@@ -223,8 +223,8 @@ static void  init_cols(void)
   PORTD |=  (1<<PD2 | 1<<PD3 | 1<<PD4 | 1<<PD7);
   DDRC  &= ~(1<<PC6);
   PORTC |=  (1<<PC6);
-  DDRB  &= ~(1<<PB4);
-  PORTB |=  (1<<PB4);
+  DDRB  &= ~(1<<PB2 | 1<<PB4);
+  PORTB |=  (1<<PB2 | 1<<PB4);
 
   // MCP23017
   expander_init();
@@ -233,6 +233,7 @@ static void  init_cols(void)
 static matrix_row_t read_cols(uint8_t row)
 {
   return expander_read_row() |
+    (PINB&(1<<PB2) ? 0 : (1<<7)) |
     (PIND&(1<<PD3) ? 0 : (1<<6)) |
     (PIND&(1<<PD2) ? 0 : (1<<5)) |
     (PIND&(1<<PD4) ? 0 : (1<<4)) |

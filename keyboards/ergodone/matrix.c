@@ -210,6 +210,7 @@ uint8_t matrix_key_count(void)
  *
  * Pro Micro: 6    5    4    3    2    1    0
  *            PD3  PD2  PD4  PC6  PD7  PE6  PB4
+ *            TX0  RX1  4    5    6    7    8
  *
  * Expander:  13   12   11   10   9    8    7
  */
@@ -245,6 +246,7 @@ static matrix_row_t read_cols(uint8_t row)
  *
  * Pro Micro: 0   1   2   3   4   5
  *            F4  F5  F6  F7  B1  B2
+ *            A3  A2  A1  A0  15  16
  *
  * Expander:  0   1   2   3   4   5
  */

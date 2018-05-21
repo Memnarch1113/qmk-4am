@@ -47,22 +47,24 @@ void expander_read_cols(void)
 
 uint8_t expander_get_col(uint8_t col)
 {
-  if (col > 4) {
+  if (col > 4) { //TODO: What is this exactly?
     col++;
   }
+  //The data from expander_read_cols() is stored in a matrix
+  //Check if the bit representing this column (shifted over by col) is a 1 or a 0
   return expander_input & (1<<col) ? 1 : 0;
 }
 
 matrix_row_t expander_read_row(void)
 {
-  expander_read_cols();
+  expander_read_cols(); //Get data from the expander. it's stored in a global variable used in expander.c
 
   /* make cols */
   matrix_row_t cols = 0;
   for (uint8_t col = 0; col < MATRIX_COLS; col++) {
-    if (expander_get_col(col)) {
-      cols |= (1UL << (MATRIX_COLS - 1 - col));
-    }
+    if (expander_get_col(col)) { //For a given column, col, check to see if it's triggered
+      cols |= (1UL << (MATRIX_COLS - 1 - col)); //If it's triggered, add it to the matrix at correct position
+    } //TODO: What is 1UL? It's not a hex number...
   }
 
   return cols;

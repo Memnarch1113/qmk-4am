@@ -160,7 +160,7 @@ uint8_t matrix_scan(void)
 #endif
 
   for (uint8_t i = 0; i < MATRIX_ROWS; i++) {
-    select_row(i);
+    select_row(i); //Set each row (pro micro and expander) to accept input
     wait_us(30);  // without this wait read unstable value.
     matrix_row_t mask = debounce_mask(i);
     matrix_row_t cols = (read_cols(i) & mask) | (matrix[i] & ~mask);
@@ -232,7 +232,8 @@ static void  init_cols(void)
 
 static matrix_row_t read_cols(uint8_t row)
 {
-  return expander_read_row() |
+  //Read all the data from the expander, and check each column on pro micro
+  return expander_read_row() | 
     (PINB&(1<<PB2) ? 0 : (1<<7)) |
     (PIND&(1<<PD3) ? 0 : (1<<6)) |
     (PIND&(1<<PD2) ? 0 : (1<<5)) |
@@ -263,6 +264,7 @@ static void unselect_rows(void)
   expander_unselect_rows();
 }
 
+//This seems to set each row on the pro micro and the expander to input mode
 static void select_row(uint8_t row)
 {
   // Pro Micro

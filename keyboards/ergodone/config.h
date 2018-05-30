@@ -14,7 +14,7 @@
 
 /* key matrix size */
 #define MATRIX_ROWS 5
-#define MATRIX_COLS 17
+#define MATRIX_COLS 16
 
 #define MOUSEKEY_INTERVAL       20
 #define MOUSEKEY_DELAY          0

@@ -47,9 +47,9 @@ void expander_read_cols(void)
 
 uint8_t expander_get_col(uint8_t col)
 {
-  if (col > 4) { //TODO: What is this exactly?
-    col++;
-  }
+  // if (col > 7) { // A hack for the ergodone, not necessary for the 4am
+  //   col++;
+  // }
   //The data from expander_read_cols() is stored in a matrix
   //Check if the bit representing this column (shifted over by col) is a 1 or a 0
   return expander_input & (1<<col) ? 1 : 0;
